@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bg"
+    tools:context="com.example.kevin321vip.drawingboard.MainActivity"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.example.kevin321vip.drawingboard.view.DrawingBoardView
+       android:id="@+id/draw_view"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent"/>
+
+    <com.example.kevin321vip.drawingboard.view.PopUpView
+        android:id="@+id/pop_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="50dp"/>
+</FrameLayout>
