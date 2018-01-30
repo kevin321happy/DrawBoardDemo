@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -31,10 +32,11 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     private int mWidth_size;
     private int mHeight_size;
     private Path mPath;
+    private RectF mRectF = new RectF();
     /**
      * 绘制的线的类型,默认是曲线
      */
-    private PatternType mPatternType = PatternType.RECTANGLE;
+    private PatternType mPatternType = PatternType.ROUND;
 
     /**
      * 设置绘制的线的类型
@@ -110,15 +112,22 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             end_x = event.getX();
             end_y = event.getY();
-            //滑动的有效距离,x，y方向上那个较大的距离
-            int distance = (int) Math.max(Math.abs(end_x - start_x), Math.abs(end_y - start_y));
             //曲线类型
             if (mPatternType == PatternType.CURVE) {
                 mPath.lineTo(end_x, end_y);
             } else if (mPatternType == PatternType.RECTANGLE) {
+                //绘制
                 if (Math.abs(start_y - end_y) > 30) {
                     mPath.addRect(start_x, start_y, end_x, end_y, Path.Direction.CCW);
                 }
+            } else if (mPatternType == PatternType.ROUND) {
+                //绘制园
+                mRectF.left = start_x;
+                mRectF.top = start_y;
+                mRectF.bottom = end_y;
+                mRectF.right = end_x;
+                mPath.reset();
+                mPath.addArc(mRectF, 0, 360);
             }
         }
         invalidate();//是绘画的动作生效
