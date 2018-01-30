@@ -12,7 +12,7 @@
 **支持**|**绘制的画笔的颜色粗细的设置**
 **支持**|**在此基础上拓展增加其他类型的图案的绘制**
 
-<a href="gif/draw_board.gif"><img src="gif/draw_board.gif" width="50%"/>
+ ![image](https://github.com/kevin321happy/DrawBoardDemo/blob/master/app/src/main/gif/draw_board.gif)
 
 #### * 主要是通过path的绘制来实现
 - 在onTouch的Down事件中将path.moveTo（downx,down,y）,在Move事件中根据设置的图案类型,path设置对应的路径
