@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.kevin321vip.drawingboard.view.DrawingBoardView;
+import com.example.kevin321vip.drawingboard.view.PatternType;
 import com.example.kevin321vip.drawingboard.view.PopUpView;
 
 public class MainActivity extends Activity implements PopUpView.OnChildMenuClickListener {
@@ -23,22 +24,27 @@ public class MainActivity extends Activity implements PopUpView.OnChildMenuClick
         mPop_view.setOnChildMenuClickListener(this);
 
     }
-
     @Override
     public void onChildClick(int currentChild) {
         switch (currentChild) {
-            case 1:
+            case 0:
                 mDraw_view.setVisibility(View.VISIBLE);
+                mDraw_view.setPatternType(PatternType.CURVE);
                 Toast.makeText(this, "开启画笔", Toast.LENGTH_SHORT).show();
                 break;
+            case 1:
+                mDraw_view.setVisibility(View.VISIBLE);
+                mDraw_view.setPatternType(PatternType.RECTANGLE);
+                Toast.makeText(this, "绘制矩形", Toast.LENGTH_SHORT).show();
+                break;
             case 2:
-                mDraw_view.clearCanvas();
-                Toast.makeText(this, "清除绘制", Toast.LENGTH_SHORT).show();
+                mDraw_view.setVisibility(View.VISIBLE);
+                mDraw_view.setPatternType(PatternType.ROUND);
+                Toast.makeText(this, "绘制圆形", Toast.LENGTH_SHORT).show();
                 break;
             case 3:
                 mDraw_view.clearCanvas();
-                mDraw_view.setVisibility(View.GONE);
-                Toast.makeText(this, "退出绘画", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "清除绘制", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

@@ -9,12 +9,17 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kevin321vip on 2017/7/18.
@@ -32,11 +37,13 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     private int mWidth_size;
     private int mHeight_size;
     private Path mPath;
-    private RectF mRectF = new RectF();
+    private int mStrokeWidth = 5;
     /**
      * 绘制的线的类型,默认是曲线
      */
     private PatternType mPatternType = PatternType.ROUND;
+    private Path mOvalPath;
+    private Path mRectanglePath;
 
     /**
      * 设置绘制的线的类型
@@ -66,7 +73,7 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         mBitmap = Bitmap.createBitmap(mWidth_size, mHeight_size, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
         mPaint.setStyle(Paint.Style.STROKE);//非填充的画笔
-        mPaint.setStrokeWidth(6);
+        mPaint.setStrokeWidth(mStrokeWidth);
         mPaint.setColor(Color.RED);//画笔的颜色
         mPaint.setAntiAlias(true);//抗锯齿
         mPaint.setDither(true);//设置头像抖动处理
@@ -74,6 +81,10 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         mPaint.setStrokeCap(Paint.Cap.ROUND);//设置画笔为原型的样式
         //绘制的路径
         mPath = new Path();
+        //绘制矩形的Path
+        mRectanglePath = new Path();
+        //绘制椭圆的Path
+        mOvalPath = new Path();
     }
 
     @Override
@@ -82,31 +93,35 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         mWidth_size = MeasureSpec.getSize(widthMeasureSpec);
         mHeight_size = MeasureSpec.getSize(heightMeasureSpec);
         init();
-
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         // TODO 自动生成的方法存根
         super.onDraw(canvas);
+        canvas.save();
         if (mPatternType == PatternType.STRAIGHT_LINE) {
             //绘制直线
             canvas.save();
             canvas.drawLine(start_x, start_y, end_x, end_y, mPaint);
         } else {
-            //绘制矩形,曲线，圆形
-            canvas.drawPath(mPath, mPaint);
+            canvas.drawPath(mPath,mPaint);
+            canvas.drawPath(mRectanglePath, mPaint);
+            canvas.drawPath(mOvalPath, mPaint);
         }
+        canvas.restore();
     }
 
     //控件被触摸的时候
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         //检测手指落下的动作
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            start_x = event.getX();//手指再屏幕上面按下的x点的坐标
-            start_y = event.getY();//手指再屏幕上面按下的y点的坐标
+            start_x = event.getX();
+            start_y = event.getY();
             mPath.moveTo(start_x, start_y);
+
         }
         //当手指再滑动操作的时候
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -116,18 +131,12 @@ public class DrawingBoardView extends View implements View.OnClickListener {
             if (mPatternType == PatternType.CURVE) {
                 mPath.lineTo(end_x, end_y);
             } else if (mPatternType == PatternType.RECTANGLE) {
-                //绘制
-                if (Math.abs(start_y - end_y) > 30) {
-                    mPath.addRect(start_x, start_y, end_x, end_y, Path.Direction.CCW);
-                }
+                mRectanglePath.reset();
+                mRectanglePath.addRect(start_x, start_y, end_x, end_y, Path.Direction.CCW);
             } else if (mPatternType == PatternType.ROUND) {
-                //绘制园
-                mRectF.left = start_x;
-                mRectF.top = start_y;
-                mRectF.bottom = end_y;
-                mRectF.right = end_x;
-                mPath.reset();
-                mPath.addArc(mRectF, 0, 360);
+                //绘制椭圆的路径
+                mOvalPath.reset();
+                mOvalPath.addArc(start_x, start_y, end_x, end_y, 0, 360);
             }
         }
         invalidate();//是绘画的动作生效
@@ -136,7 +145,11 @@ public class DrawingBoardView extends View implements View.OnClickListener {
 
     //清空画布
     public void clearCanvas() {
+        //清除了界面
+        start_x = start_y = end_x = end_y = 0;
         mPath.reset();
+        mRectanglePath.reset();
+        mOvalPath.reset();
         invalidate();
     }
 

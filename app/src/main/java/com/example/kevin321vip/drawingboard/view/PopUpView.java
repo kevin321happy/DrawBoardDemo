@@ -15,6 +15,10 @@ import android.widget.RelativeLayout;
 
 import com.example.kevin321vip.drawingboard.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by kevin321vip on 2017/7/19.
  * 弹出菜单控件
@@ -30,8 +34,13 @@ public class PopUpView extends RelativeLayout {
     private ImageView mThird_view;
     private OnChildMenuClickListener mOnChildMenuClickListener;
     private ImageView mDefault_view;
-    private boolean isAnimating=false;
-    private boolean isShowing=false;
+    private boolean isAnimating = false;
+    private boolean isShowing = false;
+    /**
+     * 存放菜单icon的集合
+     */
+    private List<Integer> mIcons = Arrays.asList(R.drawable.ic_paint, R.drawable.ic_box, R.drawable.ic_oval, R.drawable.ic_clear);
+    private ImageView mFour_view;
 
     public void setOnChildMenuClickListener(OnChildMenuClickListener onChildMenuClickListener) {
         mOnChildMenuClickListener = onChildMenuClickListener;
@@ -52,122 +61,101 @@ public class PopUpView extends RelativeLayout {
 
     //初始化方法
     private void init(Context context) {
-        //默认控件
+        //先把编辑添加到底部
         mDefaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_edit);
         mWidth = mDefaultBitmap.getWidth();
         mHeight = mDefaultBitmap.getHeight();
         LayoutParams params = new LayoutParams(mWidth, mHeight);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        //第一个子控件
-        Bitmap first_bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_paint);
-        mFirst_view = new ImageView(context);
-        mFirst_view.setImageBitmap(first_bitmap);
-        mFirst_view.setVisibility(INVISIBLE);
-        mFirst_view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mOnChildMenuClickListener != null) {
-                    mOnChildMenuClickListener.onChildClick(1);
-//                    hideMenu();
-                }
+        if (mIcons != null && mIcons.size() > 0) {
+            for (int i = 0; i < mIcons.size(); i++) {
+                Integer icon = mIcons.get(i);
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), icon);
+                ImageView Icon = new ImageView(context);
+                Icon.setImageBitmap(bitmap);
+                Icon.setVisibility(INVISIBLE);
+                addView(Icon, params);
+                final int finalI = i;
+                Icon.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnChildMenuClickListener != null) {
+                            mOnChildMenuClickListener.onChildClick(finalI);
+                        }
+                    }
+                });
             }
-        });
-
-        addView(mFirst_view, params);
-
-        //第二个子控件
-        Bitmap scend_bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_clear);
-        mSecend_view = new ImageView(context);
-        mSecend_view.setImageBitmap(scend_bitmap);
-        mSecend_view.setVisibility(INVISIBLE);
-        mSecend_view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mOnChildMenuClickListener != null) {
-                    mOnChildMenuClickListener.onChildClick(2);
-//                    hideMenu();
-                }
-
-
-            }
-        });
-        addView(mSecend_view, params);
-
-        //第三个子控件
-        Bitmap third_bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_out);
-        mThird_view = new ImageView(context);
-        mThird_view.setImageBitmap(third_bitmap);
-        mThird_view.setVisibility(INVISIBLE);
-        mThird_view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mOnChildMenuClickListener != null) {
-                    mOnChildMenuClickListener.onChildClick(3);
-                    hideMenu();
-                }
-            }
-        });
-        addView(mThird_view, params);
+        }
 
         mDefault_view = new ImageView(context);
         mDefault_view.setImageBitmap(mDefaultBitmap);
         mDefault_view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isAnimating){
+                if (isAnimating) {
                     return;
                 }
-                if (!isShowing){
-                    isShowing=true;
+                if (!isShowing) {
+                    isShowing = true;
                     showMenu();
-                }else {
-                    isShowing=false;
+                } else {
+                    isShowing = false;
                     hideMenu();
                 }
             }
         });
-        addView(mDefault_view,params);
+        addView(mDefault_view, params);
+        mFirst_view = (ImageView) getChildAt(0);
+        mSecend_view = (ImageView) getChildAt(1);
+        mThird_view = (ImageView) getChildAt(2);
+        mFour_view = (ImageView) getChildAt(3);
     }
 
     //显示菜单
     private void showMenu() {
-        mFirst_view.setVisibility(VISIBLE);
-        mSecend_view.setVisibility(VISIBLE);
-        mThird_view.setVisibility(VISIBLE);
-        ObjectAnimator first_animator = ObjectAnimator.ofFloat(mFirst_view, "translationY", 0, -(mHeight + 80) * 3);
-        ObjectAnimator secend_animator = ObjectAnimator.ofFloat(mSecend_view, "translationY", 0, -(mHeight + 80) * 2);
-        ObjectAnimator third_animator = ObjectAnimator.ofFloat(mThird_view, "translationY", 0, -(mHeight + 80) * 1);
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View childView = getChildAt(i);
+            childView.setVisibility(VISIBLE);
+        }
+        ObjectAnimator first_animator = ObjectAnimator.ofFloat(mFirst_view, "translationY", 0, -(mHeight + 80) * 4);
+        ObjectAnimator secend_animator = ObjectAnimator.ofFloat(mSecend_view, "translationY", 0, -(mHeight + 80) * 3);
+        ObjectAnimator third_animator = ObjectAnimator.ofFloat(mThird_view, "translationY", 0, -(mHeight + 80) * 2);
+        ObjectAnimator four_animator = ObjectAnimator.ofFloat(mFour_view, "translationY", 0, -(mHeight + 80) * 1);
         AnimatorSet set = new AnimatorSet();
         set.setDuration(500);
         set.setInterpolator(new OvershootInterpolator());
-        set.playTogether(first_animator,secend_animator,third_animator);
-        set.addListener(new AnimatorListenerAdapter(){
+        set.playTogether(first_animator, secend_animator, third_animator, four_animator);
+        set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                isAnimating=false;
+                isAnimating = false;
             }
         });
         //动画开始执行
         set.start();
     }
+
     //隐藏菜单
     private void hideMenu() {
         ObjectAnimator first_animator = ObjectAnimator.ofFloat(mFirst_view, "translationY", mFirst_view.getTranslationY(), 0);
-        ObjectAnimator secend_animator = ObjectAnimator.ofFloat(mSecend_view, "translationY",mSecend_view.getTranslationY(), 0);
+        ObjectAnimator secend_animator = ObjectAnimator.ofFloat(mSecend_view, "translationY", mSecend_view.getTranslationY(), 0);
         ObjectAnimator third_animator = ObjectAnimator.ofFloat(mThird_view, "translationY", mThird_view.getTranslationY(), 0);
+        ObjectAnimator four_animator = ObjectAnimator.ofFloat(mFour_view, "translationY", mFour_view.getTranslationY(), 0);
         AnimatorSet set = new AnimatorSet();
         set.setDuration(500);
         set.setInterpolator(new OvershootInterpolator());
-        set.playTogether(first_animator,secend_animator,third_animator);
-        set.addListener(new AnimatorListenerAdapter(){
+        set.playTogether(first_animator, secend_animator, third_animator, four_animator);
+        set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                isAnimating=false;
+                isAnimating = false;
                 mFirst_view.setVisibility(INVISIBLE);
                 mSecend_view.setVisibility(INVISIBLE);
                 mThird_view.setVisibility(INVISIBLE);
+                mFour_view.setVisibility(INVISIBLE);
             }
         });
         //动画开始执行
