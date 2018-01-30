@@ -38,12 +38,12 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     private int mHeight_size;
     private Path mPath;
     private int mStrokeWidth = 5;
+    private List<Path> mPaths = new ArrayList<>();
     /**
      * 绘制的线的类型,默认是曲线
      */
     private PatternType mPatternType = PatternType.ROUND;
-    private Path mOvalPath;
-    private Path mRectanglePath;
+
 
     /**
      * 设置绘制的线的类型
@@ -81,10 +81,7 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         mPaint.setStrokeCap(Paint.Cap.ROUND);//设置画笔为原型的样式
         //绘制的路径
         mPath = new Path();
-        //绘制矩形的Path
-        mRectanglePath = new Path();
-        //绘制椭圆的Path
-        mOvalPath = new Path();
+
     }
 
     @Override
@@ -105,9 +102,14 @@ public class DrawingBoardView extends View implements View.OnClickListener {
             canvas.save();
             canvas.drawLine(start_x, start_y, end_x, end_y, mPaint);
         } else {
-            canvas.drawPath(mPath,mPaint);
-            canvas.drawPath(mRectanglePath, mPaint);
-            canvas.drawPath(mOvalPath, mPaint);
+            canvas.drawPath(mPath, mPaint);
+            if (mPaths.size() > 0) {
+                for (int i = 0; i < mPaths.size(); i++) {
+                    Path path = mPaths.get(i);
+                    canvas.drawPath(path, mPaint);
+                    Log.i("draw", "绘制了Path:" + path + "path的Index：" + i);
+                }
+            }
         }
         canvas.restore();
     }
@@ -116,40 +118,48 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //检测手指落下的动作
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            start_x = event.getX();
-            start_y = event.getY();
-            mPath.moveTo(start_x, start_y);
-
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                start_x = event.getX();
+                start_y = event.getY();
+                mPath.moveTo(start_x, start_y);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                end_x = event.getX();
+                end_y = event.getY();
+                //曲线类型
+                if (mPatternType == PatternType.CURVE) {
+                    mPath.lineTo(end_x, end_y);
+                } else if (mPatternType == PatternType.RECTANGLE) {
+                    mPath.reset();
+                    mPath.addRect(start_x, start_y, end_x, end_y, Path.Direction.CCW);
+                } else if (mPatternType == PatternType.ROUND) {
+                    //绘制椭圆的路径
+                    mPath.reset();
+                    mPath.addArc(start_x, start_y, end_x, end_y, 0, 360);
+                }
+                invalidate();//是绘画的动作生效
+                break;
+            case MotionEvent.ACTION_UP:
+                Path path = new Path();
+                path.addPath(mPath);
+                mPaths.add(path);
+                Log.i("draw", "添加了Path:" + mPath + "path集合的长度：" + mPaths.size());
+                invalidate();
+                break;
+            default:
+                break;
         }
-        //当手指再滑动操作的时候
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            end_x = event.getX();
-            end_y = event.getY();
-            //曲线类型
-            if (mPatternType == PatternType.CURVE) {
-                mPath.lineTo(end_x, end_y);
-            } else if (mPatternType == PatternType.RECTANGLE) {
-                mRectanglePath.reset();
-                mRectanglePath.addRect(start_x, start_y, end_x, end_y, Path.Direction.CCW);
-            } else if (mPatternType == PatternType.ROUND) {
-                //绘制椭圆的路径
-                mOvalPath.reset();
-                mOvalPath.addArc(start_x, start_y, end_x, end_y, 0, 360);
-            }
-        }
-        invalidate();//是绘画的动作生效
         return true;
     }
 
+
     //清空画布
+
     public void clearCanvas() {
         //清除了界面
-        start_x = start_y = end_x = end_y = 0;
+        mPaths.clear();
         mPath.reset();
-        mRectanglePath.reset();
-        mOvalPath.reset();
         invalidate();
     }
 
