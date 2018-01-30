@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    android:layout_width="match_parent"
+<FrameLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/bg"
-    tools:context="com.example.kevin321vip.drawingboard.MainActivity"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.example.kevin321vip.drawingboard.view.DrawingBoardView
        android:id="@+id/draw_view"
         android:layout_width="match_parent"
         android:visibility="gone"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:DrawBoardStrokeWidth="10px"
+        app:DrawBoardPaintColor="@color/colorAccent"/>
 
     <com.example.kevin321vip.drawingboard.view.PopUpView
         android:id="@+id/pop_view"

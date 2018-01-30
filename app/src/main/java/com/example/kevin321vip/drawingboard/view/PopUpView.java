@@ -38,7 +38,7 @@ public class PopUpView extends RelativeLayout {
     /**
      * 存放菜单icon的集合
      */
-    private List<Integer> mIcons = Arrays.asList(R.drawable.ic_paint, R.drawable.ic_box, R.drawable.ic_oval, R.drawable.ic_clear, R.drawable.ic_repeal);
+    private List<Integer> mIcons = Arrays.asList(R.drawable.ic_paint, R.drawable.ic_box, R.drawable.ic_oval, R.drawable.ic_repeal,R.drawable.ic_clear);
 
     public void setOnChildMenuClickListener(OnChildMenuClickListener onChildMenuClickListener) {
         mOnChildMenuClickListener = onChildMenuClickListener;

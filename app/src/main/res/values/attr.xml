@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DrawingBoardView">
+        <!--画笔的颜色-->
+        <attr name="DrawBoardPaintColor" format="color" />
+        <!--画笔的宽度-->
+        <attr name="DrawBoardStrokeWidth" format="dimension" />
+    </declare-styleable>
+</resources>

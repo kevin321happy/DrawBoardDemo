@@ -1,6 +1,7 @@
 package com.example.kevin321vip.drawingboard.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,6 +18,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import com.example.kevin321vip.drawingboard.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +50,7 @@ public class DrawingBoardView extends View implements View.OnClickListener {
      * 绘制的线的类型,默认是曲线
      */
     private PatternType mPatternType = PatternType.ROUND;
+    private int mPaintColor;
 
     /**
      * 设置绘制的线的类型
@@ -63,11 +67,26 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     }
 
     public DrawingBoardView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public DrawingBoardView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        getAttr(context, attrs);
+    }
+
+    /**
+     * 获取自定义属性
+     *
+     * @param context
+     * @param attrs
+     */
+    private void getAttr(Context context, AttributeSet attrs) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DrawingBoardView);
+        mPaintColor = typedArray.getColor(R.styleable.DrawingBoardView_DrawBoardPaintColor, Color.RED);
+        mStrokeWidth = typedArray.getDimensionPixelSize(R.styleable.DrawingBoardView_DrawBoardStrokeWidth, 5);
+        typedArray.recycle();
+
     }
 
     //初始化操作
@@ -77,7 +96,7 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         mCanvas = new Canvas(mBitmap);
         mPaint.setStyle(Paint.Style.STROKE);//非填充的画笔
         mPaint.setStrokeWidth(mStrokeWidth);
-        mPaint.setColor(Color.RED);//画笔的颜色
+        mPaint.setColor(mPaintColor);//画笔的颜色
         mPaint.setAntiAlias(true);//抗锯齿
         mPaint.setDither(true);//设置头像抖动处理
         mPaint.setStrokeJoin(Paint.Join.ROUND);//设置头像结合的方式
