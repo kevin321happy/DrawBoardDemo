@@ -27,7 +27,46 @@
 
 #### * Touch事件中的处理
 ```java
+ @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                start_x = event.getX();
+                start_y = event.getY();
+                //移动到按下的点
+                mPath.moveTo(start_x, start_y);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                end_x = event.getX();
+                end_y = event.getY();
 
+                if (mPatternType == PatternType.CURVE) {
+                    //曲线
+                    mPath.lineTo(end_x, end_y);
+                } else if (mPatternType == PatternType.RECTANGLE) {
+                    //矩形
+                    mPath.reset();
+                    mPath.addRect(start_x, start_y, end_x, end_y, Path.Direction.CCW);
+                } else if (mPatternType == PatternType.ROUND) {
+                    //绘制椭圆的路径
+                    mPath.reset();
+                    mPath.addArc(start_x, start_y, end_x, end_y, 0, 360);
+                }
+                //是绘画的动作生效
+                invalidate();
+                break;
+            case MotionEvent.ACTION_UP:
+                //在Up中添加在最后绘制的Path到集合中
+                Path path = new Path();
+                path.addPath(mPath);
+                mPaths.add(path);
+                invalidate();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
 
-```xml
+```
 
