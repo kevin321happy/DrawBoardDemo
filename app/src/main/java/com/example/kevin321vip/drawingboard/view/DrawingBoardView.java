@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -19,7 +20,6 @@ import android.widget.Toast;
  */
 
 public class DrawingBoardView extends View implements View.OnClickListener {
-
     private Paint mPaint;
     private Bitmap mBitmap;
     private float start_x;
@@ -34,7 +34,7 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     /**
      * 绘制的线的类型,默认是曲线
      */
-    private PatternType mPatternType = PatternType.STRAIGHT_LINE;
+    private PatternType mPatternType = PatternType.RECTANGLE;
 
     /**
      * 设置绘制的线的类型
@@ -86,14 +86,13 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     @Override
     protected void onDraw(Canvas canvas) {
         // TODO 自动生成的方法存根
-//        mCanvas.save();
-//        mCanvas.restore();
         super.onDraw(canvas);
         if (mPatternType == PatternType.STRAIGHT_LINE) {
+            //绘制直线
+            canvas.save();
             canvas.drawLine(start_x, start_y, end_x, end_y, mPaint);
-//            start_x=end_x;
-//            start_y=end_y;
         } else {
+            //绘制矩形,曲线，圆形
             canvas.drawPath(mPath, mPaint);
         }
     }
@@ -116,22 +115,13 @@ public class DrawingBoardView extends View implements View.OnClickListener {
             //曲线类型
             if (mPatternType == PatternType.CURVE) {
                 mPath.lineTo(end_x, end_y);
-            } else if (mPatternType == PatternType.STRAIGHT_LINE) {
-                Log.i("draw", "绘制了 :" + "开始点:" + start_x + "，" + start_y + "结束点:" + end_x + "," + end_y);
-
-                invalidate();
-//                start_x=end_x;
-//                start_y=end_y;
-                //if (distance > 200) {
-//                    mPath.lineTo(end_x, end_y);
-//                    start_x = end_x;
-//                    start_y = end_y;
-//                }
-//                //直线类型
-//                mPath.reset();
+            } else if (mPatternType == PatternType.RECTANGLE) {
+                if (Math.abs(start_y - end_y) > 30) {
+                    mPath.addRect(start_x, start_y, end_x, end_y, Path.Direction.CCW);
+                }
             }
         }
-//        invalidate();//是绘画的动作生效
+        invalidate();//是绘画的动作生效
         return true;
     }
 
