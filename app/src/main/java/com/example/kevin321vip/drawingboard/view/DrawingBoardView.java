@@ -30,6 +30,18 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     private int mWidth_size;
     private int mHeight_size;
     private Path mPath;
+    /**
+     * 绘制的线的类型,默认是曲线
+     */
+    private PatternType mPatternType=PatternType.CURVE;
+
+    /**
+     * 设置绘制的线的类型
+     * @param patternType
+     */
+    public void setPatternType(PatternType patternType) {
+        mPatternType = patternType;
+    }
 
     public DrawingBoardView(Context context) {
         super(context);
@@ -93,10 +105,6 @@ public class DrawingBoardView extends View implements View.OnClickListener {
             end_x = event.getX();
             end_y = event.getY();
             mPath.lineTo(end_x,end_y);
-//            mCanvas.drawLine(start_x, start_y, end_x, end_y, mPaint);//在画布上面画线
-            //上一个点的结束点是下一个位置的开始点
-//            start_x = end_x;
-//            start_y = end_y;
         }
         invalidate();//是绘画的动作生效
         return true;
@@ -105,7 +113,6 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     //清空画布
     public void clearCanvas() {
         mPath.reset();
-      //  mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         invalidate();
     }
 
