@@ -30,15 +30,12 @@ import java.util.List;
 
 public class DrawingBoardView extends View implements View.OnClickListener {
     private Paint mPaint;
-    private Bitmap mBitmap;
     private float start_x;
     private float start_y;
     private float end_x;
     private float end_y;
-    private Canvas mCanvas;
     private Context mContext;
-    private int mWidth_size;
-    private int mHeight_size;
+
     private Path mPath;
     private int mStrokeWidth = 5;
     private List<Path> mPaths = new ArrayList<>();
@@ -86,14 +83,13 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         mPaintColor = typedArray.getColor(R.styleable.DrawingBoardView_DrawBoardPaintColor, Color.RED);
         mStrokeWidth = typedArray.getDimensionPixelSize(R.styleable.DrawingBoardView_DrawBoardStrokeWidth, 5);
         typedArray.recycle();
+        init();
 
     }
 
     //初始化操作
     private void init() {
         mPaint = new Paint(Paint.DITHER_FLAG);
-        mBitmap = Bitmap.createBitmap(mWidth_size, mHeight_size, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mBitmap);
         mPaint.setStyle(Paint.Style.STROKE);//非填充的画笔
         mPaint.setStrokeWidth(mStrokeWidth);
         mPaint.setColor(mPaintColor);//画笔的颜色
@@ -106,18 +102,11 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mWidth_size = MeasureSpec.getSize(widthMeasureSpec);
-        mHeight_size = MeasureSpec.getSize(heightMeasureSpec);
-        init();
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
         // TODO 自动生成的方法存根
         super.onDraw(canvas);
         canvas.save();
+        //如果是重绘操作
         if (REPEAL_FLAG) {
             if (mPaths.size() == 0) {
                 clearCanvas();
@@ -136,6 +125,7 @@ public class DrawingBoardView extends View implements View.OnClickListener {
             canvas.save();
             canvas.drawLine(start_x, start_y, end_x, end_y, mPaint);
         } else {
+            //先绘制临时的mpath，然后绘制path集合中的path
             canvas.drawPath(mPath, mPaint);
             if (mPaths.size() > 0) {
                 for (int i = 0; i < mPaths.size(); i++) {
@@ -156,14 +146,18 @@ public class DrawingBoardView extends View implements View.OnClickListener {
             case MotionEvent.ACTION_DOWN:
                 start_x = event.getX();
                 start_y = event.getY();
+                //移动到按下的点
                 mPath.moveTo(start_x, start_y);
                 break;
             case MotionEvent.ACTION_MOVE:
                 end_x = event.getX();
                 end_y = event.getY();
+
                 if (mPatternType == PatternType.CURVE) {
+                    //曲线
                     mPath.lineTo(end_x, end_y);
                 } else if (mPatternType == PatternType.RECTANGLE) {
+                    //矩形
                     mPath.reset();
                     mPath.addRect(start_x, start_y, end_x, end_y, Path.Direction.CCW);
                 } else if (mPatternType == PatternType.ROUND) {
@@ -175,6 +169,7 @@ public class DrawingBoardView extends View implements View.OnClickListener {
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
+                //在Up中添加在最后绘制的Path到集合中
                 Path path = new Path();
                 path.addPath(mPath);
                 mPaths.add(path);
@@ -199,7 +194,6 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         //TODO 存根处理
-        mCanvas.save();
         Toast.makeText(mContext, "你点我干嘛？", Toast.LENGTH_SHORT).show();
     }
 
@@ -207,6 +201,7 @@ public class DrawingBoardView extends View implements View.OnClickListener {
      * 撤销
      */
     public void repeal() {
+        //移除最后一次绘制的path
         if (mPaths != null && mPaths.size() > 0) {
             mPaths.remove(mPaths.size() - 1);
             REPEAL_FLAG = true;
