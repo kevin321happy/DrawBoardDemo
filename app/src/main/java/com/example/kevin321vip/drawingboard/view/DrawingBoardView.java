@@ -127,7 +127,6 @@ public class DrawingBoardView extends View implements View.OnClickListener {
             case MotionEvent.ACTION_MOVE:
                 end_x = event.getX();
                 end_y = event.getY();
-                //曲线类型
                 if (mPatternType == PatternType.CURVE) {
                     mPath.lineTo(end_x, end_y);
                 } else if (mPatternType == PatternType.RECTANGLE) {
@@ -138,13 +137,13 @@ public class DrawingBoardView extends View implements View.OnClickListener {
                     mPath.reset();
                     mPath.addArc(start_x, start_y, end_x, end_y, 0, 360);
                 }
-                invalidate();//是绘画的动作生效
+                //是绘画的动作生效
+                invalidate();
                 break;
             case MotionEvent.ACTION_UP:
                 Path path = new Path();
                 path.addPath(mPath);
                 mPaths.add(path);
-                Log.i("draw", "添加了Path:" + mPath + "path集合的长度：" + mPaths.size());
                 invalidate();
                 break;
             default:
