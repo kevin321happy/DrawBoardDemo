@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -33,10 +34,11 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     /**
      * 绘制的线的类型,默认是曲线
      */
-    private PatternType mPatternType=PatternType.CURVE;
+    private PatternType mPatternType = PatternType.STRAIGHT_LINE;
 
     /**
      * 设置绘制的线的类型
+     *
      * @param patternType
      */
     public void setPatternType(PatternType patternType) {
@@ -84,10 +86,16 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     @Override
     protected void onDraw(Canvas canvas) {
         // TODO 自动生成的方法存根
-        mCanvas.save();
-        mCanvas.restore();
+//        mCanvas.save();
+//        mCanvas.restore();
         super.onDraw(canvas);
-        canvas.drawPath(mPath,mPaint);
+        if (mPatternType == PatternType.STRAIGHT_LINE) {
+            canvas.drawLine(start_x, start_y, end_x, end_y, mPaint);
+//            start_x=end_x;
+//            start_y=end_y;
+        } else {
+            canvas.drawPath(mPath, mPaint);
+        }
     }
 
     //控件被触摸的时候
@@ -97,16 +105,33 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             start_x = event.getX();//手指再屏幕上面按下的x点的坐标
             start_y = event.getY();//手指再屏幕上面按下的y点的坐标
-            mPath.moveTo(start_x,start_y);
-//            mCanvas.drawPoint(start_x, start_y, mPaint);//画出当前按下的点
+            mPath.moveTo(start_x, start_y);
         }
         //当手指再滑动操作的时候
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             end_x = event.getX();
             end_y = event.getY();
-            mPath.lineTo(end_x,end_y);
+            //滑动的有效距离,x，y方向上那个较大的距离
+            int distance = (int) Math.max(Math.abs(end_x - start_x), Math.abs(end_y - start_y));
+            //曲线类型
+            if (mPatternType == PatternType.CURVE) {
+                mPath.lineTo(end_x, end_y);
+            } else if (mPatternType == PatternType.STRAIGHT_LINE) {
+                Log.i("draw", "绘制了 :" + "开始点:" + start_x + "，" + start_y + "结束点:" + end_x + "," + end_y);
+
+                invalidate();
+//                start_x=end_x;
+//                start_y=end_y;
+                //if (distance > 200) {
+//                    mPath.lineTo(end_x, end_y);
+//                    start_x = end_x;
+//                    start_y = end_y;
+//                }
+//                //直线类型
+//                mPath.reset();
+            }
         }
-        invalidate();//是绘画的动作生效
+//        invalidate();//是绘画的动作生效
         return true;
     }
 
