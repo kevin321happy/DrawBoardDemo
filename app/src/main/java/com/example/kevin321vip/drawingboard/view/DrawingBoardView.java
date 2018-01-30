@@ -40,9 +40,14 @@ public class DrawingBoardView extends View implements View.OnClickListener {
     private int mStrokeWidth = 5;
     private List<Path> mPaths = new ArrayList<>();
     /**
+     * 标志是否需要重绘
+     */
+    private boolean REPEAL_FLAG = false;
+    /**
      * 绘制的线的类型,默认是曲线
      */
     private PatternType mPatternType = PatternType.ROUND;
+
     /**
      * 设置绘制的线的类型
      *
@@ -80,6 +85,7 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         //绘制的路径
         mPath = new Path();
     }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -87,11 +93,25 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         mHeight_size = MeasureSpec.getSize(heightMeasureSpec);
         init();
     }
+
     @Override
     protected void onDraw(Canvas canvas) {
         // TODO 自动生成的方法存根
         super.onDraw(canvas);
         canvas.save();
+        if (REPEAL_FLAG) {
+            if (mPaths.size() == 0) {
+                clearCanvas();
+            } else {
+                for (int i = 0; i < mPaths.size(); i++) {
+                    Path path = mPaths.get(i);
+                    canvas.drawPath(path, mPaint);
+                    Log.i("draw", "绘制了Path:" + path + "path的Index：" + i);
+                }
+            }
+            REPEAL_FLAG = false;
+            return;
+        }
         if (mPatternType == PatternType.STRAIGHT_LINE) {
             //绘制直线
             canvas.save();
@@ -162,5 +182,16 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         //TODO 存根处理
         mCanvas.save();
         Toast.makeText(mContext, "你点我干嘛？", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 撤销
+     */
+    public void repeal() {
+        if (mPaths != null && mPaths.size() > 0) {
+            mPaths.remove(mPaths.size() - 1);
+            REPEAL_FLAG = true;
+            invalidate();
+        }
     }
 }

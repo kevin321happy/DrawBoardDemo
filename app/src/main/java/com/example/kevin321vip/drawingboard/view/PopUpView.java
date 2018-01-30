@@ -29,11 +29,6 @@ public class PopUpView extends RelativeLayout {
     private Bitmap mDefaultBitmap;
     private int mWidth;
     private int mHeight;
-    private ImageView mFirst_view;
-    private ImageView mSecend_view;
-    private ImageView mThird_view;
-    private ImageView mFour_view;
-    private ImageView mFive_view;
 
     private OnChildMenuClickListener mOnChildMenuClickListener;
     private ImageView mDefault_view;
@@ -107,11 +102,6 @@ public class PopUpView extends RelativeLayout {
             }
         });
         addView(mDefault_view, params);
-//        mFirst_view = (ImageView) getChildAt(0);
-//        mSecend_view = (ImageView) getChildAt(1);
-//        mThird_view = (ImageView) getChildAt(2);
-//        mFour_view = (ImageView) getChildAt(3);
-//        mFive_view = (ImageView) getChildAt(4);
     }
     //显示菜单
     private void showMenu() {
@@ -147,11 +137,6 @@ public class PopUpView extends RelativeLayout {
             ObjectAnimator first_animator = ObjectAnimator.ofFloat(childView, "translationY", childView.getTranslationY(), 0);
            mAnimators.add(first_animator);
         }
-
-//        ObjectAnimator first_animator = ObjectAnimator.ofFloat(mFirst_view, "translationY", mFirst_view.getTranslationY(), 0);
-//        ObjectAnimator secend_animator = ObjectAnimator.ofFloat(mSecend_view, "translationY", mSecend_view.getTranslationY(), 0);
-//        ObjectAnimator third_animator = ObjectAnimator.ofFloat(mThird_view, "translationY", mThird_view.getTranslationY(), 0);
-//        ObjectAnimator four_animator = ObjectAnimator.ofFloat(mFour_view, "translationY", mFour_view.getTranslationY(), 0);
         AnimatorSet set = new AnimatorSet();
         set.setDuration(500);
         set.setInterpolator(new OvershootInterpolator());
