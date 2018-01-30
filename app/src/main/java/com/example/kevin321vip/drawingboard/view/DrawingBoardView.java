@@ -48,8 +48,8 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         mBitmap = Bitmap.createBitmap(mWidth_size, mHeight_size, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
         mPaint.setStyle(Paint.Style.STROKE);//非填充的画笔
-        mPaint.setStrokeWidth(5);
-        mPaint.setColor(Color.parseColor("#EEAF55"));//画笔的颜色
+        mPaint.setStrokeWidth(6);
+        mPaint.setColor(Color.RED);//画笔的颜色
         mPaint.setAntiAlias(true);//抗锯齿
         mPaint.setDither(true);//设置头像抖动处理
         mPaint.setStrokeJoin(Paint.Join.ROUND);//设置头像结合的方式

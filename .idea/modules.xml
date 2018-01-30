@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Drawingboard.iml" filepath="$PROJECT_DIR$/Drawingboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DrawBoardDemo.iml" filepath="$PROJECT_DIR$/DrawBoardDemo.iml" />
+      <module fileurl="file://D:\WorkSpace\DrawBoardDemo\Drawingboard.iml" filepath="D:\WorkSpace\DrawBoardDemo\Drawingboard.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\WorkSpace\DrawBoardDemo\app\app.iml" filepath="D:\WorkSpace\DrawBoardDemo\app\app.iml" />
     </modules>
   </component>
 </project>
