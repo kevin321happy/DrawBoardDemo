@@ -32,15 +32,18 @@ public class PopUpView extends RelativeLayout {
     private ImageView mFirst_view;
     private ImageView mSecend_view;
     private ImageView mThird_view;
+    private ImageView mFour_view;
+    private ImageView mFive_view;
+
     private OnChildMenuClickListener mOnChildMenuClickListener;
     private ImageView mDefault_view;
     private boolean isAnimating = false;
     private boolean isShowing = false;
+    private List<Animator> mAnimators = new ArrayList<>();
     /**
      * 存放菜单icon的集合
      */
-    private List<Integer> mIcons = Arrays.asList(R.drawable.ic_paint, R.drawable.ic_box, R.drawable.ic_oval, R.drawable.ic_clear);
-    private ImageView mFour_view;
+    private List<Integer> mIcons = Arrays.asList(R.drawable.ic_paint, R.drawable.ic_box, R.drawable.ic_oval, R.drawable.ic_clear, R.drawable.ic_repeal);
 
     public void setOnChildMenuClickListener(OnChildMenuClickListener onChildMenuClickListener) {
         mOnChildMenuClickListener = onChildMenuClickListener;
@@ -86,7 +89,6 @@ public class PopUpView extends RelativeLayout {
                 });
             }
         }
-
         mDefault_view = new ImageView(context);
         mDefault_view.setImageBitmap(mDefaultBitmap);
         mDefault_view.setOnClickListener(new OnClickListener() {
@@ -105,27 +107,26 @@ public class PopUpView extends RelativeLayout {
             }
         });
         addView(mDefault_view, params);
-        mFirst_view = (ImageView) getChildAt(0);
-        mSecend_view = (ImageView) getChildAt(1);
-        mThird_view = (ImageView) getChildAt(2);
-        mFour_view = (ImageView) getChildAt(3);
+//        mFirst_view = (ImageView) getChildAt(0);
+//        mSecend_view = (ImageView) getChildAt(1);
+//        mThird_view = (ImageView) getChildAt(2);
+//        mFour_view = (ImageView) getChildAt(3);
+//        mFive_view = (ImageView) getChildAt(4);
     }
-
     //显示菜单
     private void showMenu() {
+        mAnimators.clear();
         int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
+        for (int i = 0; i < childCount-1; i++) {
             View childView = getChildAt(i);
             childView.setVisibility(VISIBLE);
+            ObjectAnimator first_animator = ObjectAnimator.ofFloat(childView, "translationY", 0, -(mHeight + 80) * (childCount - i - 1));
+            mAnimators.add(first_animator);
         }
-        ObjectAnimator first_animator = ObjectAnimator.ofFloat(mFirst_view, "translationY", 0, -(mHeight + 80) * 4);
-        ObjectAnimator secend_animator = ObjectAnimator.ofFloat(mSecend_view, "translationY", 0, -(mHeight + 80) * 3);
-        ObjectAnimator third_animator = ObjectAnimator.ofFloat(mThird_view, "translationY", 0, -(mHeight + 80) * 2);
-        ObjectAnimator four_animator = ObjectAnimator.ofFloat(mFour_view, "translationY", 0, -(mHeight + 80) * 1);
         AnimatorSet set = new AnimatorSet();
         set.setDuration(500);
         set.setInterpolator(new OvershootInterpolator());
-        set.playTogether(first_animator, secend_animator, third_animator, four_animator);
+        set.playTogether(mAnimators);
         set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -139,23 +140,30 @@ public class PopUpView extends RelativeLayout {
 
     //隐藏菜单
     private void hideMenu() {
-        ObjectAnimator first_animator = ObjectAnimator.ofFloat(mFirst_view, "translationY", mFirst_view.getTranslationY(), 0);
-        ObjectAnimator secend_animator = ObjectAnimator.ofFloat(mSecend_view, "translationY", mSecend_view.getTranslationY(), 0);
-        ObjectAnimator third_animator = ObjectAnimator.ofFloat(mThird_view, "translationY", mThird_view.getTranslationY(), 0);
-        ObjectAnimator four_animator = ObjectAnimator.ofFloat(mFour_view, "translationY", mFour_view.getTranslationY(), 0);
+        mAnimators.clear();
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount-1; i++) {
+            View childView = getChildAt(i);
+            ObjectAnimator first_animator = ObjectAnimator.ofFloat(childView, "translationY", childView.getTranslationY(), 0);
+           mAnimators.add(first_animator);
+        }
+
+//        ObjectAnimator first_animator = ObjectAnimator.ofFloat(mFirst_view, "translationY", mFirst_view.getTranslationY(), 0);
+//        ObjectAnimator secend_animator = ObjectAnimator.ofFloat(mSecend_view, "translationY", mSecend_view.getTranslationY(), 0);
+//        ObjectAnimator third_animator = ObjectAnimator.ofFloat(mThird_view, "translationY", mThird_view.getTranslationY(), 0);
+//        ObjectAnimator four_animator = ObjectAnimator.ofFloat(mFour_view, "translationY", mFour_view.getTranslationY(), 0);
         AnimatorSet set = new AnimatorSet();
         set.setDuration(500);
         set.setInterpolator(new OvershootInterpolator());
-        set.playTogether(first_animator, secend_animator, third_animator, four_animator);
+        set.playTogether(mAnimators);
         set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 isAnimating = false;
-                mFirst_view.setVisibility(INVISIBLE);
-                mSecend_view.setVisibility(INVISIBLE);
-                mThird_view.setVisibility(INVISIBLE);
-                mFour_view.setVisibility(INVISIBLE);
+                for (int i = 0; i < childCount-1; i++) {
+                    getChildAt(i).setVisibility(INVISIBLE);
+                }
             }
         });
         //动画开始执行

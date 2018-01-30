@@ -43,8 +43,6 @@ public class DrawingBoardView extends View implements View.OnClickListener {
      * 绘制的线的类型,默认是曲线
      */
     private PatternType mPatternType = PatternType.ROUND;
-
-
     /**
      * 设置绘制的线的类型
      *
@@ -81,9 +79,7 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         mPaint.setStrokeCap(Paint.Cap.ROUND);//设置画笔为原型的样式
         //绘制的路径
         mPath = new Path();
-
     }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -91,7 +87,6 @@ public class DrawingBoardView extends View implements View.OnClickListener {
         mHeight_size = MeasureSpec.getSize(heightMeasureSpec);
         init();
     }
-
     @Override
     protected void onDraw(Canvas canvas) {
         // TODO 自动生成的方法存根
