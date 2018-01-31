@@ -51,7 +51,6 @@ public class MainActivity extends Activity implements PopUpView.OnChildMenuClick
                 mDraw_view.clearCanvas();
                 Toast.makeText(this, "清除绘制", Toast.LENGTH_SHORT).show();
                 break;
-
         }
     }
 }

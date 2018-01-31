@@ -81,7 +81,6 @@ public class DrawingBoardView extends View implements View.OnClickListener, PopU
         this.mContext=context;
         getAttr(context, attrs);
     }
-
     /**
      * 获取自定义属性
      * @param context
@@ -257,6 +256,7 @@ public class DrawingBoardView extends View implements View.OnClickListener, PopU
             case 5:
                 if (MENU_OPEN) {
                     //如果打开则置为关闭
+                    clearCanvas();
                     setVisibility(GONE);
                     MENU_OPEN = false;
                 } else {
