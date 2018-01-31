@@ -24,6 +24,8 @@ import com.example.kevin321vip.drawingboard.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.PI;
+
 /**
  * Created by kevin321vip on 2017/7/18.
  */
@@ -57,6 +59,9 @@ public class DrawingBoardView extends View implements View.OnClickListener, PopU
      * 是否菜单展开了
      */
     private boolean MENU_OPEN = false;
+    private double mRadians;
+    private int mWidth;
+    private int mHeight;
 
     /**
      * 设置绘制的线的类型
@@ -78,11 +83,13 @@ public class DrawingBoardView extends View implements View.OnClickListener, PopU
 
     public DrawingBoardView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.mContext=context;
+        this.mContext = context;
         getAttr(context, attrs);
     }
+
     /**
      * 获取自定义属性
+     *
      * @param context
      * @param attrs
      */
@@ -130,9 +137,12 @@ public class DrawingBoardView extends View implements View.OnClickListener, PopU
         }
         if (mPatternType == PatternType.STRAIGHT_LINE) {
             //绘制直线
-            canvas.save();
+
             canvas.drawLine(start_x, start_y, end_x, end_y, mPaint);
         } else {
+//            canvas.save();
+//            canvas.rotate((float) Math.toDegrees(mRadians),mWidth/2,mHeight/2);
+//            Log.i("degrees","旋转的弧度:"+mRadians+"旋转的角度:"+Math.toDegrees(mRadians));
             //先绘制临时的mpath，然后绘制path集合中的path
             canvas.drawPath(mPath, mPaint);
             if (mPaths.size() > 0) {
@@ -142,10 +152,17 @@ public class DrawingBoardView extends View implements View.OnClickListener, PopU
                     Log.i("draw", "绘制了Path:" + path + "path的Index：" + i);
                 }
             }
+//            canvas.restore();
         }
         canvas.restore();
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        mWidth = MeasureSpec.getSize(widthMeasureSpec);
+        mHeight = MeasureSpec.getSize(heightMeasureSpec);
+    }
     //控件被触摸的时候
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -160,7 +177,10 @@ public class DrawingBoardView extends View implements View.OnClickListener, PopU
             case MotionEvent.ACTION_MOVE:
                 end_x = event.getX();
                 end_y = event.getY();
-
+                //正切值
+//                float tanValue = Math.abs(end_x - start_x) / Math.abs(end_y - start_y);
+//                //根据正切值拿到手指滑动中的偏移的弧度值
+//                mRadians = Math.toRadians(Math.atan(tanValue)*180/PI);
                 if (mPatternType == PatternType.CURVE) {
                     //曲线
                     mPath.lineTo(end_x, end_y);
@@ -263,10 +283,7 @@ public class DrawingBoardView extends View implements View.OnClickListener, PopU
                     setVisibility(VISIBLE);
                     MENU_OPEN = true;
                 }
-
                 break;
-
-
         }
     }
 }
