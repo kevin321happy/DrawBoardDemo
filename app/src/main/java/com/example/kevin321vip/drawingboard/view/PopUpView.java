@@ -87,9 +87,9 @@ public class PopUpView extends RelativeLayout {
         mWidth = mDefaultBitmap.getWidth();
         mHeight = mDefaultBitmap.getHeight();
         LayoutParams params = new LayoutParams(mWidth, mHeight);
-        if (mOrientationType==OrientationType.LEVEL){
+        if (mOrientationType == OrientationType.LEVEL) {
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        }else {
+        } else {
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         }
         if (mIcons != null && mIcons.size() > 0) {
@@ -116,6 +116,9 @@ public class PopUpView extends RelativeLayout {
         mDefault_view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (mOnChildMenuClickListener != null) {
+                    mOnChildMenuClickListener.onChildClick(mIcons.size());
+                }
                 if (isAnimating) {
                     return;
                 }

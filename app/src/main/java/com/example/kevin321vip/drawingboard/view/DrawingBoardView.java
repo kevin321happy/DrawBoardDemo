@@ -28,7 +28,7 @@ import java.util.List;
  * Created by kevin321vip on 2017/7/18.
  */
 
-public class DrawingBoardView extends View implements View.OnClickListener {
+public class DrawingBoardView extends View implements View.OnClickListener, PopUpView.OnChildMenuClickListener {
     private Paint mPaint;
     private float start_x;
     private float start_y;
@@ -48,6 +48,15 @@ public class DrawingBoardView extends View implements View.OnClickListener {
      */
     private PatternType mPatternType = PatternType.ROUND;
     private int mPaintColor;
+    /**
+     * 控制的View
+     */
+    private PopUpView mControlView;
+
+    /**
+     * 是否菜单展开了
+     */
+    private boolean MENU_OPEN = false;
 
     /**
      * 设置绘制的线的类型
@@ -69,12 +78,12 @@ public class DrawingBoardView extends View implements View.OnClickListener {
 
     public DrawingBoardView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.mContext=context;
         getAttr(context, attrs);
     }
 
     /**
      * 获取自定义属性
-     *
      * @param context
      * @param attrs
      */
@@ -206,6 +215,58 @@ public class DrawingBoardView extends View implements View.OnClickListener {
             mPaths.remove(mPaths.size() - 1);
             REPEAL_FLAG = true;
             invalidate();
+        }
+    }
+
+    /**
+     * 设置控制的弹窗
+     *
+     * @param pop_view
+     */
+    public void setControlledPopover(PopUpView pop_view) {
+        this.mControlView = pop_view;
+        mControlView.setOnChildMenuClickListener(this);
+
+    }
+
+    @Override
+    public void onChildClick(int currentChild) {
+        switch (currentChild) {
+            case 0:
+                setVisibility(View.VISIBLE);
+                setPatternType(PatternType.CURVE);
+                Toast.makeText(mContext, "开启画笔", Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
+                setVisibility(View.VISIBLE);
+                setPatternType(PatternType.RECTANGLE);
+                Toast.makeText(mContext, "绘制矩形", Toast.LENGTH_SHORT).show();
+                break;
+            case 2:
+                setVisibility(View.VISIBLE);
+                setPatternType(PatternType.ROUND);
+                Toast.makeText(mContext, "绘制圆形", Toast.LENGTH_SHORT).show();
+                break;
+            case 3:
+                repeal();
+                break;
+            case 4:
+                clearCanvas();
+                Toast.makeText(mContext, "清除绘制", Toast.LENGTH_SHORT).show();
+                break;
+            case 5:
+                if (MENU_OPEN) {
+                    //如果打开则置为关闭
+                    setVisibility(GONE);
+                    MENU_OPEN = false;
+                } else {
+                    setVisibility(VISIBLE);
+                    MENU_OPEN = true;
+                }
+
+                break;
+
+
         }
     }
 }

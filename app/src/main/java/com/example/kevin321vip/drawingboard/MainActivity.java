@@ -22,6 +22,8 @@ public class MainActivity extends Activity implements PopUpView.OnChildMenuClick
         mDraw_view = (DrawingBoardView) findViewById(R.id.draw_view);
         mPop_view = (PopUpView) findViewById(R.id.pop_view);
         mPop_view.setOnChildMenuClickListener(this);
+        //设置控制的弹窗
+        mDraw_view.setControlledPopover(mPop_view);
 
     }
     @Override
