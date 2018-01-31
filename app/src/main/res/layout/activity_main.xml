@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <com.example.kevin321vip.drawingboard.view.DrawingBoardView
-       android:id="@+id/draw_view"
+        android:id="@+id/draw_view"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="match_parent"
-        app:DrawBoardStrokeWidth="10px"
-        app:DrawBoardPaintColor="@color/colorAccent"/>
+        android:visibility="gone"
+        app:DrawBoardPaintColor="@color/colorAccent"
+        app:DrawBoardStrokeWidth="10px" />
 
     <com.example.kevin321vip.drawingboard.view.PopUpView
         android:id="@+id/pop_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:layout_marginLeft="50px"
+        android:layout_marginTop="50px"
+        app:PopUpViewOrientation="0" />
+
+    <com.example.kevin321vip.drawingboard.view.PopUpView
+        android:id="@+id/pop_view1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom|right"
         android:layout_marginBottom="50dp"
-        android:layout_marginRight="50dp"/>
+        android:layout_marginRight="50dp"
+        app:PopUpViewOrientation="1"/>
 </FrameLayout>

@@ -5,5 +5,13 @@
         <attr name="DrawBoardPaintColor" format="color" />
         <!--画笔的宽度-->
         <attr name="DrawBoardStrokeWidth" format="dimension" />
+        <!--控件的方向-->
+        <attr name="DrawBoardOrientation" format="enum" />
+    </declare-styleable>
+
+    <!--弹窗控件-->
+    <declare-styleable name="PopUpView">
+        <!--控件的方向,水平或者竖直-->
+        <attr name="PopUpViewOrientation" format="integer" />
     </declare-styleable>
 </resources>

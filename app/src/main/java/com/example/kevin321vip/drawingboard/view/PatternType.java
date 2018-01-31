@@ -14,5 +14,4 @@ public enum PatternType {
     RECTANGLE,
     //圆形
     ROUND
-
 }

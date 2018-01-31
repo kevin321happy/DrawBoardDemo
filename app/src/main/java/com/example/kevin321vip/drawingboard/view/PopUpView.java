@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
@@ -36,9 +37,23 @@ public class PopUpView extends RelativeLayout {
     private boolean isShowing = false;
     private List<Animator> mAnimators = new ArrayList<>();
     /**
+     * 控件的方向
+     */
+    private OrientationType mOrientationType = OrientationType.LEVEL;
+
+    /**
+     * 设置弹窗的显示的方向
+     *
+     * @param orientationType
+     */
+    public void setOrientationType(OrientationType orientationType) {
+        mOrientationType = orientationType;
+    }
+
+    /**
      * 存放菜单icon的集合
      */
-    private List<Integer> mIcons = Arrays.asList(R.drawable.ic_paint, R.drawable.ic_box, R.drawable.ic_oval, R.drawable.ic_repeal,R.drawable.ic_clear);
+    private List<Integer> mIcons = Arrays.asList(R.drawable.ic_paint, R.drawable.ic_box, R.drawable.ic_oval, R.drawable.ic_repeal, R.drawable.ic_clear);
 
     public void setOnChildMenuClickListener(OnChildMenuClickListener onChildMenuClickListener) {
         mOnChildMenuClickListener = onChildMenuClickListener;
@@ -54,6 +69,14 @@ public class PopUpView extends RelativeLayout {
 
     public PopUpView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PopUpView);
+        int orientation = ta.getInteger(R.styleable.PopUpView_PopUpViewOrientation, 0);
+        if (orientation == 0) {
+            mOrientationType = OrientationType.LEVEL;
+        } else if (orientation == 1) {
+            mOrientationType = OrientationType.VERTICAL;
+        }
+        ta.recycle();
         init(context);
     }
 
@@ -64,7 +87,11 @@ public class PopUpView extends RelativeLayout {
         mWidth = mDefaultBitmap.getWidth();
         mHeight = mDefaultBitmap.getHeight();
         LayoutParams params = new LayoutParams(mWidth, mHeight);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        if (mOrientationType==OrientationType.LEVEL){
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        }else {
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }
         if (mIcons != null && mIcons.size() > 0) {
             for (int i = 0; i < mIcons.size(); i++) {
                 Integer icon = mIcons.get(i);
@@ -103,15 +130,23 @@ public class PopUpView extends RelativeLayout {
         });
         addView(mDefault_view, params);
     }
+
     //显示菜单
     private void showMenu() {
         mAnimators.clear();
         int childCount = getChildCount();
-        for (int i = 0; i < childCount-1; i++) {
+        for (int i = 0; i < childCount - 1; i++) {
             View childView = getChildAt(i);
             childView.setVisibility(VISIBLE);
-            ObjectAnimator first_animator = ObjectAnimator.ofFloat(childView, "translationY", 0, -(mHeight + 80) * (childCount - i - 1));
-            mAnimators.add(first_animator);
+            ObjectAnimator animator;
+            if (mOrientationType == OrientationType.VERTICAL) {
+                //竖直方向
+                animator = ObjectAnimator.ofFloat(childView, "translationY", 0, -(mHeight + 80) * (childCount - i - 1));
+            } else {
+                //水平方向
+                animator = ObjectAnimator.ofFloat(childView, "translationX", 0, (mHeight + 80) * (childCount - i - 1));
+            }
+            mAnimators.add(animator);
         }
         AnimatorSet set = new AnimatorSet();
         set.setDuration(500);
@@ -132,10 +167,17 @@ public class PopUpView extends RelativeLayout {
     private void hideMenu() {
         mAnimators.clear();
         final int childCount = getChildCount();
-        for (int i = 0; i < childCount-1; i++) {
+        for (int i = 0; i < childCount - 1; i++) {
             View childView = getChildAt(i);
-            ObjectAnimator first_animator = ObjectAnimator.ofFloat(childView, "translationY", childView.getTranslationY(), 0);
-           mAnimators.add(first_animator);
+            ObjectAnimator animator;
+            if (mOrientationType == OrientationType.LEVEL) {
+                //水平弹出
+                animator = ObjectAnimator.ofFloat(childView, "translationX", childView.getTranslationY(), 0);
+            } else {
+                //竖直方向弹出
+                animator = ObjectAnimator.ofFloat(childView, "translationY", childView.getTranslationY(), 0);
+            }
+            mAnimators.add(animator);
         }
         AnimatorSet set = new AnimatorSet();
         set.setDuration(500);
@@ -146,7 +188,7 @@ public class PopUpView extends RelativeLayout {
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 isAnimating = false;
-                for (int i = 0; i < childCount-1; i++) {
+                for (int i = 0; i < childCount - 1; i++) {
                     getChildAt(i).setVisibility(INVISIBLE);
                 }
             }
