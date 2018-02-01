@@ -1,7 +1,6 @@
 # DrawBoardDemo
 ## 一个画板的控件
-[![Twitter](https://img.shields.io/badge/Gradle-3.0.1-red.svg)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fimg.shields.io%2Fbadge%2FGradle-3.0.1-red.svg)
-
+[![CDNJS](https://img.shields.io/badge/Gradle-3.0.1-blue.svg)]()   [![Gem](https://img.shields.io/badge/Widget-drawingboard-orange.svg)]()   [![Travis branch](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 
 ### 两个自定义控件,一个画布的View，一个控制绘制操作的弹窗菜单
 
