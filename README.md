@@ -11,8 +11,9 @@
 **支持**|**绘制的撤销、清屏操作**
 **支持**|**绘制的画笔的颜色粗细的设置**
 **支持**|**在此基础上拓展增加其他类型的图案的绘制**
+
 <div align="center">
-    <img src="https://github.com/kevin321happy/DrawBoardDemo/blob/master/app/src/main/gif/draw_board.gif" width="400" height="800">
+    <img src="https://github.com/kevin321happy/DrawBoardDemo/blob/master/app/src/main/gif/draw_board.gif"  width="50%" height="50%">
   </div>
 
 
